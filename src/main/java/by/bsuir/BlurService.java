@@ -4,26 +4,30 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class BlurService {
     private Image image;
     private Kernel kernel;
     private Map<Point, int[][]> point2Impose;
+    private String outputPath;
 
-    public BlurService(Image image, Kernel kernel) {
+    public BlurService(Image image, Kernel kernel, String outputPath) {
         this.image = image;
         this.kernel = kernel;
+        this.outputPath = outputPath;
         point2Impose = new HashMap<>();
     }
 
     public void imposeKernel() throws IOException {
-        int[][] newBufferedImage = new int[image.getHeight()][image.getWidth()];
+        int[][] newBufferedImagePixels = new int[image.getHeight()][image.getWidth()];
         int additionalCoordinates = kernel.getBorder() / 2;
         for (int i = 0; i < image.getHeight(); i++) {
             for (int j = 0; j < image.getWidth(); j++) {
@@ -34,20 +38,19 @@ public class BlurService {
             int[][] redColorMatrix = getColorMatrix(value, this::getRed);
             int[][] greenColorMatrix = getColorMatrix(value, this::getGreen);
             int[][] blueColorMatrix = getColorMatrix(value, this::getBlue);
-            int red = multipleOnKernel(redColorMatrix);
-            int green = multipleOnKernel(greenColorMatrix);
-            int blue = multipleOnKernel(blueColorMatrix);
+            int red = multipleOnKernel(redColorMatrix) / kernel.getBorder();
+            int green = multipleOnKernel(greenColorMatrix) / kernel.getBorder();
+            int blue = multipleOnKernel(blueColorMatrix) / kernel.getBorder();
             int rgb = (red << 16 | green << 8 | blue);
-            newBufferedImage[key.getY()][key.getX()] = rgb;
+            newBufferedImagePixels[key.getY()][key.getX()] = rgb;
         });
-        BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), 1);
-        for (int i = 0; i < newBufferedImage.length; i++) {
-            for (int j = 0; j < newBufferedImage[i].length; j++) {
-                bufferedImage.setRGB(j,i,newBufferedImage[i][j]);
+        BufferedImage newBufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), 1);
+        for (int i = 0; i < newBufferedImagePixels.length; i++) {
+            for (int j = 0; j < newBufferedImagePixels[i].length; j++) {
+                newBufferedImage.setRGB(j, i, newBufferedImagePixels[i][j]);
             }
         }
-        File file = new File("b.jpeg");
-        ImageIO.write(bufferedImage, "jpeg", file);
+        createFile(newBufferedImage);
     }
 
     private int[][] imposeKernel(Kernel kernel, int x, int y, int additionalCoordinates) {
@@ -126,5 +129,13 @@ public class BlurService {
             }
         }
         return concreteColorMatrix;
+    }
+
+    private void createFile(BufferedImage newBufferedImage) throws IOException {
+        Path path = Paths.get(outputPath);
+        if(!Files.exists(path)) {
+            Files.createFile(path);
+        }
+        ImageIO.write(newBufferedImage, "jpeg", new File(outputPath));
     }
 }

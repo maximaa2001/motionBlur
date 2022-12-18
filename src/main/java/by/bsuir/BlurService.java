@@ -133,7 +133,7 @@ public class BlurService {
 
     private void createFile(BufferedImage newBufferedImage) throws IOException {
         Path path = Paths.get(outputPath);
-        if(!Files.exists(path)) {
+        if (!Files.exists(path)) {
             Files.createFile(path);
         }
         ImageIO.write(newBufferedImage, "jpeg", new File(outputPath));

@@ -1,15 +1,11 @@
 package by.bsuir;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,12 +34,6 @@ public class MirrorPixelTest {
         }
     }
 
-//    @AfterEach
-//    public void deteteFile() throws IOException {
-//        Path path = Paths.get(outputPath);
-//        Files.delete(path);
-//    }
-
     @Test
     public void negativeY__negativeX__leftTopBorder__test() {
         Map<Point, int[][]> point2Impose = (Map<Point, int[][]>) findPrivateField(blurService, "point2Impose");
@@ -65,25 +55,25 @@ public class MirrorPixelTest {
     @Test
     public void positiveY__positiveX__rightTopBorder__test() {
         Map<Point, int[][]> point2Impose = (Map<Point, int[][]>) findPrivateField(blurService, "point2Impose");
-        assertEquals(bufferedImage.getRGB(bufferedImage.getWidth()-1, 1), point2Impose.get(new Point(bufferedImage.getWidth()-2, 0))[0][4]);
+        assertEquals(bufferedImage.getRGB(bufferedImage.getWidth() - 1, 1), point2Impose.get(new Point(bufferedImage.getWidth() - 2, 0))[0][4]);
     }
 
     @Test
     public void negativeY__positiveX__rightTopBorder__test() {
         Map<Point, int[][]> point2Impose = (Map<Point, int[][]>) findPrivateField(blurService, "point2Impose");
-        assertEquals(bufferedImage.getRGB(bufferedImage.getWidth()-1, 0), point2Impose.get(new Point(bufferedImage.getWidth()-2, 0))[2][4]);
+        assertEquals(bufferedImage.getRGB(bufferedImage.getWidth() - 1, 0), point2Impose.get(new Point(bufferedImage.getWidth() - 2, 0))[2][4]);
     }
 
     @Test
     public void positiveY__negativeX__leftBottomBorder__test() {
         Map<Point, int[][]> point2Impose = (Map<Point, int[][]>) findPrivateField(blurService, "point2Impose");
-        assertEquals(bufferedImage.getRGB(1, bufferedImage.getHeight()-1), point2Impose.get(new Point(0, bufferedImage.getHeight() - 1))[3][0]);
+        assertEquals(bufferedImage.getRGB(1, bufferedImage.getHeight() - 1), point2Impose.get(new Point(0, bufferedImage.getHeight() - 1))[3][0]);
     }
 
     @Test
     public void positiveY__negativeX__rightBottomBorder__test() {
         Map<Point, int[][]> point2Impose = (Map<Point, int[][]>) findPrivateField(blurService, "point2Impose");
-        assertEquals(bufferedImage.getRGB(bufferedImage.getWidth() -1, bufferedImage.getHeight()-1), point2Impose.get(new Point(bufferedImage.getWidth() - 1, bufferedImage.getHeight() - 1))[3][3]);
+        assertEquals(bufferedImage.getRGB(bufferedImage.getWidth() - 1, bufferedImage.getHeight() - 1), point2Impose.get(new Point(bufferedImage.getWidth() - 1, bufferedImage.getHeight() - 1))[3][3]);
     }
 
     private Object findPrivateField(Object object, String nameField) {

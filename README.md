@@ -6,4 +6,4 @@
 
     java -jar motionBlur.jar kernelSize pathToInputImage pathToOutputImage
 
-***kernelSize must be an odd number for coorect work***
+***kernelSize must be an odd number for correct work***

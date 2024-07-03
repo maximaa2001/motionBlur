@@ -4,6 +4,6 @@
 ---
 **You can use jar file in root of project:**
 
-    java -jar motionBlur.jar kernelSize pathToInputImage pathToOutputImage
+    java -jar motionBlur.jar {kernelSize} {pathToInputImage} {pathToOutputImage}
 
 ***kernelSize must be an odd number for correct work***
